@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>School Travel Explorer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>School Travel Explorer <span class="draft">Draft, not for citation</span></h1>
+      <p class="sub">Brandywine, Christina, Colonial and Red Clay Consolidated school districts. Travel from where children live to public schools, by group and area.</p>
+    </div>
+    <button id="aboutBtn" class="ghost" type="button">About the data</button>
+  </header>
+
+  <section class="controls" aria-label="Map and summary controls">
+    <label>Grade band
+      <select id="band"><option>Elementary</option><option selected>Middle</option><option>High</option></select>
+    </label>
+    <label>Travel by
+      <select id="mode"><option value="walk">Walking</option><option value="car" selected>Driving</option></select>
+    </label>
+    <label>Measure
+      <select id="measure">
+        <option value="zoned">Time to zoned school</option>
+        <option value="detour">Zoning detour</option>
+        <option value="nearest">Time to nearest school of a type</option>
+        <option value="extra" selected>Extra minutes to choose</option>
+        <option value="options">Options within time limit</option>
+        <option value="charters_5mi">Charters within 5 miles</option>
+      </select>
+    </label>
+    <label id="setWrap">School type
+      <select id="set"></select>
+    </label>
+    <label id="limitWrap">Time limit
+      <select id="limit"><option value="10">10 minutes</option><option value="20" selected>20 minutes</option><option value="30">30 minutes</option></select>
+    </label>
+    <label>People
+      <select id="pop"><option value="children" selected>Children (under 18)</option><option value="residents">All residents</option></select>
+    </label>
+  </section>
+
+  <main class="layout">
+    <section class="mapwrap">
+      <div id="map" aria-label="Map of census blocks"></div>
+      <div class="maptools">
+        <button id="drawBtn" type="button">Draw a region</button>
+        <button id="clearBtn" type="button" class="ghost">Clear selection</button>
+        <span id="drawHint" class="hint" hidden>Click to add points; double-click to finish.</span>
+      </div>
+      <div id="legend" class="legend" aria-live="polite"></div>
+    </section>
+
+    <aside class="panel" aria-live="polite">
+      <label class="areaPick">Area
+        <select id="area"></select>
+      </label>
+      <div id="areaInfo" class="areaInfo"></div>
+      <h2 id="panelTitle"></h2>
+      <p id="panelNote" class="note"></p>
+      <div class="tablewrap"><table id="stats"></table></div>
+      <p class="note key"><strong>Bold</strong> = gap vs all reaches a size the project uses (walk 5 / 10 min, drive 5 / 10 / 20 min, shares 5 / 10 points). Income groups are tract-level ACS estimates; ranges in brackets are 90% survey ranges (study area and districts only), and an income gap is only called out when its range excludes zero. Race groups come from the 2020 Census and have no range.</p>
+    </aside>
+  </main>
+
+  <div id="tip" class="tip" hidden></div>
+
+  <dialog id="about">
+    <h2>About the data</h2>
+    <p>This draft explorer uses only public data. It describes areas and the groups of people who live there (2020 Census blocks), not individual families or students, and it makes no recommendations.</p>
+    <ul>
+      <li><strong>Where people live:</strong> 2020 Census blocks in the four districts; household population (people in group quarters such as prisons, nursing homes and college dorms are left out). Children are under 18. Block counts carry Census privacy noise: look at areas, not single blocks.</li>
+      <li><strong>Income:</strong> American Community Survey 2020–2024 (table B17024), by tract, spread to blocks. Every block in a tract shares its tract's income mix, so income gaps are conservative.</li>
+      <li><strong>Schools:</strong> Delaware Department of Education directory and enrollment; every public school statewide is a possible destination. Charter, magnet, vo-tech and choice-program groupings follow the earlier Wilmington-area report. Special programs (referral only) are left out.</li>
+      <li><strong>Zoned school:</strong> the Department of Education's 2026–27 attendance zones, grade by grade.</li>
+      <li><strong>Travel times:</strong> computed on OpenStreetMap roads: walking at a child's pace (4 km/h), driving without traffic. Times start from each block (larger blocks from points along their roads). Walking times are long and skewed, so read medians and shares beside averages.</li>
+      <li><strong>Zoning detour:</strong> extra time to the zoned school compared with the nearest regular school in the same district. <strong>Extra minutes to choose:</strong> nearest school of a type minus the zoned school; negative means the choice is closer.</li>
+      <li><strong>Charters within 5 miles:</strong> charters whose 5-mile admission-preference radius (straight line) covers the block; potential priority only, for charters that use it.</li>
+      <li><strong>Not included:</strong> traffic, road safety, school buses, transit, and admission rules (applications, lotteries, preferences, auditions).</li>
+    </ul>
+    <p class="note">Base map © OpenStreetMap contributors. Built <span id="built"></span>.</p>
+    <form method="dialog"><button>Close</button></form>
+  </dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
